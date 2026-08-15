@@ -17,7 +17,13 @@ A C++ program for constructing the bus admittance (Ybus) matrix from transmissio
 ```
 
 The `example/` directory contains `example_line_data.txt`, which demonstrates the required input format.
+## Clone the Repository
 
+Clone the repository before building the project:
+
+```bash
+git clone git@github.com:depuc8/Ybus.git
+```
 ## Building
 
 Compile the program using the provided Makefile.
