@@ -60,9 +60,14 @@ void write_ybus(const ComplexMatrix& Ybus,
 
     std::cout << "Ybus matrix written to: " << out_path << '\n';
 }
-ComplexMatrix Ybus(std::ifstream& file, const std::string& input_file, int choice){
+ComplexMatrix Ybus(const std::string& input_file, int choice){
     if(choice < 0 || choice > 3){
         std::cerr<<"Error: Ybus choice must be 0,1,2,3";
+        return {};
+    }
+    std::ifstream file(input_file);
+    if(!file.is_open()){
+        std::cerr<<"Error: Could not open file "<< input_file << '\n';
         return {};
     }
     std::vector<Branch> branches;
