@@ -7,7 +7,8 @@ SRC_DIR = src
 INC_DIR = include
 
 # Files
-SRC = $(SRC_DIR)/Ybus.cpp
+# Use wildcard to automatically grab ALL .cpp files in the src directory
+SRC = $(wildcard $(SRC_DIR)/*.cpp)
 TARGET = Ybus
 
 # Default target
