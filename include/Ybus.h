@@ -1,16 +1,17 @@
 #ifndef YBUS_H
 #define YBUS_H
-
 #include<vector>
 #include<complex>
 #include<string>
 #include<fstream>
 
-void print_ybus(const std::vector<std::vector<std::complex<double>>>&Ybus);
+using ComplexMatrix = std::vector<std::vector<std::complex<double>>>;
 
-void write_ybus(const std::vector<std::vector<std::complex<double>>>& Ybus,
+void print_ybus(const ComplexMatrix &Ybus);
+
+void write_ybus(const ComplexMatrix& Ybus,
                 const std::string& input_file);
 
-void Ybus(std::ifstream& file, const std::string& input_file);
+ComplexMatrix Ybus(std::ifstream& file, const std::string& input_file,int choice);
 
 #endif

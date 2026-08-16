@@ -8,6 +8,8 @@
 #include<iomanip>
 #include<filesystem>
 
+using ComplexMatrix = std::vector<std::vector<std::complex<double>>>;
+
 struct Branch{
     int from;
     int to;
@@ -17,7 +19,7 @@ struct Branch{
     double tap;
 };
 
-void print_ybus(const std::vector<std::vector<std::complex<double>>>&Ybus){
+void print_ybus(const ComplexMatrix &Ybus){
     int m = Ybus.size();
     int n = Ybus[0].size();
     
@@ -29,7 +31,7 @@ void print_ybus(const std::vector<std::vector<std::complex<double>>>&Ybus){
     }
 }
 
-void write_ybus(const std::vector<std::vector<std::complex<double>>>& Ybus,
+void write_ybus(const ComplexMatrix& Ybus,
                 const std::string& input_file) {
     namespace fs = std::filesystem;
 
@@ -58,7 +60,11 @@ void write_ybus(const std::vector<std::vector<std::complex<double>>>& Ybus,
 
     std::cout << "Ybus matrix written to: " << out_path << '\n';
 }
-void Ybus(std::ifstream& file, const std::string& input_file){
+ComplexMatrix Ybus(std::ifstream& file, const std::string& input_file, int choice){
+    if(choice < 0 || choice > 3){
+        std::cerr<<"Error: Ybus choice must be 0,1,2,3";
+        return {};
+    }
     std::vector<Branch> branches;
     Branch branch;
     int nbus = INT_MIN;
@@ -92,22 +98,20 @@ void Ybus(std::ifstream& file, const std::string& input_file){
         Ybus[j][i] += yji;
         Ybus[j][j] += yjj;
     }
-    int choice;
-    while(true){
-
-        std::cout << "1. Print Ybus Matrix\n"
-                 << "2. Write Ybus Matrix to file (recommended)\n"
-                 << "3. Print and Write to file"
-                 << "Enter your choice (1 or 2 or 3): ";
-        if(std::cin >> choice &&(choice == 1 || choice == 2 || choice == 3)) break;
-        std::cout<<"Invalid choice. Please enter 1 or 2 or 3.\n";
-        std::cin.clear();
-
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
+    // while(true){
+    //
+    //     std::cout << "1. Print Ybus Matrix\n"
+    //              << "2. Write Ybus Matrix to file (recommended)\n"
+    //              << "3. Print and Write to file"
+    //              << "Enter your choice (1 or 2 or 3): ";
+    //     if(std::cin >> choice &&(choice == 1 || choice == 2 || choice == 3)) break;
+    //     std::cout<<"Invalid choice. Please enter 1 or 2 or 3.\n";
+    //     std::cin.clear();
+    //
+    //     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    // }
     if(choice == 1){
         print_ybus(Ybus);
-        return;
     }
     else if(choice == 2){
         write_ybus(Ybus,input_file);
@@ -116,21 +120,6 @@ void Ybus(std::ifstream& file, const std::string& input_file){
         print_ybus(Ybus);
         write_ybus(Ybus,input_file);
     }
-
+    return Ybus;
 }
 
-int main(){
-
-    std::cout<<"Enter file path for line data: ";
-    std::string file_path;
-    std::cin >> file_path; 
-
-    std::ifstream file(file_path);
-
-    
-    if(!file.is_open()){
-        std::cerr<<"Error: could not find the file\n";
-        return 1;
-    }
-    Ybus(file,file_path);
-}
