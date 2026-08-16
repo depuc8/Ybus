@@ -80,6 +80,11 @@ ComplexMatrix Ybus(const std::string& input_file, int choice){
         nbus = std::max(nbus,branch.to);
     }
 
+    if (file.fail() && !file.eof()) {
+            std::cerr << "Error: Invalid data found in file. Expected numbers.\n";
+            return {}; 
+    }
+
     file.close();
     
     std::vector<std::vector<std::complex<double>>> Ybus(nbus,std::vector<std::complex<double>>(nbus, std::complex<double>(0.0,0.0)));
@@ -98,23 +103,11 @@ ComplexMatrix Ybus(const std::string& input_file, int choice){
         std::complex<double> yji = -y/t;
         std::complex<double> yjj = (y+ysh);
 
-        Ybus[i][i] += yii;
-        Ybus[i][j] += yij;
-        Ybus[j][i] += yji;
-        Ybus[j][j] += yjj;
+        if(i >= 0)           Ybus[i][i] += yii;
+        if(i >= 0 && j >= 0) Ybus[i][j] += yij;
+        if(i >= 0 && j >= 0) Ybus[j][i] += yji;
+        if(j >= 0)           Ybus[j][j] += yjj;
     }
-    // while(true){
-    //
-    //     std::cout << "1. Print Ybus Matrix\n"
-    //              << "2. Write Ybus Matrix to file (recommended)\n"
-    //              << "3. Print and Write to file"
-    //              << "Enter your choice (1 or 2 or 3): ";
-    //     if(std::cin >> choice &&(choice == 1 || choice == 2 || choice == 3)) break;
-    //     std::cout<<"Invalid choice. Please enter 1 or 2 or 3.\n";
-    //     std::cin.clear();
-    //
-    //     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    // }
     if(choice == 1){
         print_ybus(Ybus);
     }
@@ -127,4 +120,3 @@ ComplexMatrix Ybus(const std::string& input_file, int choice){
     }
     return Ybus;
 }
-
