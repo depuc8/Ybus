@@ -1,5 +1,7 @@
 #include<iostream>
 #include<string>
+#include<vector>
+#include<complex>
 #include "../include/Ybus.h"
 
 using ComplexMatrix = std::vector<std::vector<std::complex<double>>>;
@@ -10,7 +12,9 @@ int main(){
     std::string file_path;
     std::cin >> file_path; 
 
-    ComplexMatrix ybus_0 = Ybus(file_path,0);
+    ComplexMatrix ybus_0 = Ybus(file_path,2);
+    std::cout<<ybus_0[0].size()<<std::endl;
+
     std::cout<<"returns Ybus and Outputs nothing"<<std::endl;
     std::cout<<"\n";
     ComplexMatrix ybus_1 = Ybus(file_path,1);

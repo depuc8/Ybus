@@ -1,9 +1,9 @@
 #ifndef YBUS_H
 #define YBUS_H
+
 #include<vector>
 #include<complex>
 #include<string>
-#include<fstream>
 
 using ComplexMatrix = std::vector<std::vector<std::complex<double>>>;
 

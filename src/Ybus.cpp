@@ -8,7 +8,9 @@
 #include<iomanip>
 #include<filesystem>
 
-using ComplexMatrix = std::vector<std::vector<std::complex<double>>>;
+using ComplexDouble = std::complex<double>;
+using ComplexVector = std::vector<ComplexDouble>;
+using ComplexMatrix = std::vector<ComplexVector>;
 
 struct Branch{
     int from;
@@ -20,14 +22,14 @@ struct Branch{
 };
 
 void print_ybus(const ComplexMatrix &Ybus){
-    int m = Ybus.size();
-    int n = Ybus[0].size();
-    
-    for(int i = 0; i < m; i++){
-        for(int j = 0; j < n; j++){
-            std::cout<<Ybus[i][j]<<" ";
+    std::cout << std::fixed << std::setprecision(4);
+    for (const auto& row : Ybus) {
+        for (const auto& val : row) {
+            std::cout << std::setw(9) << val.real()
+                      << (val.imag() >= 0 ? "+" : "")
+                      << std::setw(7) << val.imag() << "j  ";
         }
-        std::cout<<std::endl;
+        std::cout << '\n';
     }
 }
 
@@ -87,21 +89,21 @@ ComplexMatrix Ybus(const std::string& input_file, int choice){
 
     file.close();
     
-    std::vector<std::vector<std::complex<double>>> Ybus(nbus,std::vector<std::complex<double>>(nbus, std::complex<double>(0.0,0.0)));
+    ComplexMatrix Ybus(nbus,ComplexVector(nbus, ComplexDouble(0.0,0.0)));
 
-    for(const auto branch:branches){
+    for(const auto &branch:branches){
         int i = branch.from - 1;
         int j = branch.to - 1;
         
-        std::complex<double> z(branch.R,branch.X);
-        std::complex<double> y = 1.0/z;
-        std::complex<double> ysh(0.0,branch.B);
+        ComplexDouble z(branch.R,branch.X);
+        ComplexDouble y = 1.0/z;
+        ComplexDouble ysh(0.0,branch.B);
         double t = (branch.tap == 0.0) ? 1.0:branch.tap;
         
-        std::complex<double> yii = (y + ysh)/(t*t);
-        std::complex<double> yij = -y/t;
-        std::complex<double> yji = -y/t;
-        std::complex<double> yjj = (y+ysh);
+        ComplexDouble yii = (y + ysh)/(t*t);
+        ComplexDouble yij = -y/t;
+        ComplexDouble yji = -y/t;
+        ComplexDouble yjj = (y+ysh);
 
         if(i >= 0)           Ybus[i][i] += yii;
         if(i >= 0 && j >= 0) Ybus[i][j] += yij;
