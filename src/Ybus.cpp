@@ -11,6 +11,7 @@
 using ComplexDouble = std::complex<double>;
 using ComplexVector = std::vector<ComplexDouble>;
 using ComplexMatrix = std::vector<ComplexVector>;
+using Matrix = std::vector<std::vector<double>>;
 
 struct Branch{
     int from;
@@ -121,4 +122,31 @@ ComplexMatrix Ybus(const std::string& input_file, int choice){
         write_ybus(Ybus,input_file);
     }
     return Ybus;
+}
+Matrix Bbus(const ComplexMatrix& Ybus) {
+    int row = Ybus.size();
+    if (row == 0) return {};
+    int columns = Ybus[0].size();
+
+    Matrix Bbus(row,std::vector<double>(columns));
+    for(int i = 0; i < row; i++){
+        for(int j = 0; j < columns; j++){
+            Bbus[i][j] = Ybus[i][j].imag();
+        }
+    }
+    return Bbus;
+}
+
+Matrix Gbus(const ComplexMatrix& Ybus) {
+    int row = Ybus.size();
+    if (row == 0) return {};
+    int columns = Ybus[0].size();
+
+    Matrix Gbus(row,std::vector<double>(columns));
+    for(int i = 0; i < row; i++){
+        for(int j = 0; j < columns; j++){
+            Gbus[i][j] = Ybus[i][j].real();
+        }
+    }
+    return Gbus;
 }
